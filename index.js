@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var util = require('util');
 var defaultAlgorithm = 'aes256';
+var defaultEncoding = 'hex';
 
 module.exports = cookieEncrypter;
 module.exports.encryptCookie = encryptCookie;
@@ -13,6 +14,7 @@ module.exports.decryptCookie = decryptCookie;
  * @param  {Object} options
  * @param  {Object} options.algorithm Algorithm to use to encrypt data
  * @param  {Object} options.key       Key to use to encrypt data
+ * @param  {Object} options.encoding  Encoding used for the cookie string
  *
  * @return {String}
  */
@@ -22,7 +24,8 @@ function encryptCookie(str, options) {
   }
 
   var cipher = crypto.createCipher(options.algorithm || defaultAlgorithm, options.key);
-  var encrypted = cipher.update(str, 'utf8', 'hex') + cipher.final('hex');
+  var encoding = options.encoding || defaultEncoding;
+  var encrypted = cipher.update(str, 'utf8', encoding) + cipher.final(encoding);
 
   return encrypted;
 }
@@ -34,12 +37,13 @@ function encryptCookie(str, options) {
  * @param  {Object} options
  * @param  {Object} options.algorithm Algorithm to use to decrypt data
  * @param  {Object} options.key       Key to use to decrypt data
+ * @param  {Object} options.encoding  Encoding used in the cookie string
  *
  * @return {String}
  */
 function decryptCookie(str, options) {
   var decipher = crypto.createDecipher(options.algorithm || defaultAlgorithm, options.key);
-  var decrypted = decipher.update(str, 'hex', 'utf8') + decipher.final('utf8');
+  var decrypted = decipher.update(str, options.encoding || defaultEncoding, 'utf8') + decipher.final('utf8');
 
   return decrypted;
 }
@@ -51,6 +55,7 @@ function decryptCookie(str, options) {
  * @param  {Object} options
  * @param  {String} options.algorithm Algorithm to use to decrypt data
  * @param  {String} options.key       Key to use to decrypt data
+ * @param  {Object} options.encoding  Encoding used in the cookie string
  *
  * @return {Object}
  */
@@ -104,10 +109,12 @@ function JSONCookie(str) {
  * @param  {String} secret
  * @param  {Object} options
  * @param  {Object} options.algorithm - any algorithm supported by OpenSSL
+ * @param  {Object} options.encoding - could be 'base64' or 'hex'
  */
 function cookieEncrypter(secret, _options) {
   const defaultOptions = {
-    algorithm: 'aes256',
+    algorithm: defaultAlgorithm,
+    encoding: defaultEncoding,
     key: secret,
   };
 

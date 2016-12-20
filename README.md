@@ -60,6 +60,7 @@ Think about the `npm install` before running it ;)
 - `secret` a string or array used for encrypting cookies.
 - `options` an optional object to set options for encryption.
 -  `options.algorithm` algorithm used to encrypt cookie data (any algorithm supported by OpenSSL). `aes256` used as the default one.
+-  `options.encoding` encoding used for the cookie string. `hex` is used as the default encoding. In order to save bytes, `base64` can be used as alternative encoding.
 
 ### cookieEncrypter.encryptCookie(str, options)
 

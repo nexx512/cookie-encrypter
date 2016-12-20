@@ -1,3 +1,5 @@
+  * Add an option to set the encoding of the encrypted string
+
 v0.2.3 / 2016-11-18
 ===================
 
